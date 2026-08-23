@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>住宅購入安全予算診断</title>
+<meta name="description" content="借りられる額ではなく、購入後の生活・教育費・老後まで考えた住宅購入予算を簡易診断します。">
+<style>
+:root{--b:#145c8e;--bg:#f4f7f9;--t:#17212b;--m:#66727e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:var(--t);line-height:1.65}
+.w{max-width:760px;margin:auto;padding:0 14px 50px}
+.top{padding:12px 4px;font-weight:900;font-size:14px}
+.hero{background:linear-gradient(135deg,var(--b),#0d456d);color:#fff;margin:0 -14px 15px;padding:28px 22px;border-radius:0 0 24px 24px}
+.hero h1{font-size:29px;line-height:1.35;margin:8px 0}
+.badge{display:inline-block;background:#ffffff22;border:1px solid #ffffff55;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800}
+.card{background:#fff;border:1px solid #dce4ea;border-radius:18px;padding:19px;margin-top:14px}
+.grid,.metrics,.tiers{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.f label{display:block;font-size:13px;font-weight:800;margin-bottom:4px}
+.f span{font-weight:500;color:var(--m)}
+input{width:100%;padding:12px;border:1.5px solid #cfd8df;border-radius:11px;font-size:16px}
+.btn{width:100%;border:0;border-radius:12px;padding:15px;background:var(--b);color:#fff;font-size:16px;font-weight:900}
+.err{display:none;background:#fff0ee;color:#9b2118;padding:11px;border-radius:10px;margin:10px 0}
+.res{display:none}
+.judge{font-size:21px;font-weight:900;border-radius:14px;padding:14px;margin-bottom:12px}
+.good{background:#eaf7f0;color:#16794b}.warn{background:#fff6df;color:#9a6300}.bad{background:#fff0ee;color:#b42318}
+.metric,.tier{background:#f6f8fa;border-radius:12px;padding:12px}
+.metric span,.tier span{display:block;font-size:12px;color:var(--m)}
+.metric small{display:block;margin-top:6px;font-size:11px;color:var(--m);line-height:1.5}
+.metric strong,.tier strong{font-size:20px}
+.tier.safe{border-top:5px solid #27835d}.tier.std{border-top:5px solid #d69a18}.tier.limit{border-top:5px solid #c23c32}
+.metric.alert{background:#fff0ee;border:1px solid #efb5ae}.metric.caution{background:#fff8ed;border:1px solid #efd49a}
+.sum{border-left:4px solid var(--b);background:#f5f9fc;padding:12px;border-radius:10px;margin:14px 0}
+.risk{background:#fff8ed;padding:9px 11px;border-radius:10px;margin:7px 0;font-size:14px}
+.info{background:#eef6fb;padding:10px 12px;border-radius:10px;margin:9px 0;font-size:13px}
+.criteria{background:#f7f7f8;border:1px solid #e0e3e7;padding:12px;border-radius:12px;margin-top:14px;font-size:13px}
+.criteria b{display:block;margin-bottom:5px}
+.cta{background:#17212b;color:#fff;border-radius:16px;padding:18px;margin-top:16px}
+.cta a{display:block;background:#fff;color:#17212b;text-decoration:none;text-align:center;border-radius:11px;padding:13px;font-weight:900}
+.small{font-size:12px;color:var(--m)}
+@media(max-width:560px){.grid,.metrics,.tiers{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="w">
+<div id="brand" class="top">住宅購入安全予算診断｜スマイルFP事務所合同会社</div>
+<section class="hero"><span class="badge">無料・約3〜4分</span><h1>その家、買って大丈夫？</h1><p>「いくら借りられるか」ではなく、購入後の生活・教育費・老後まで考えて住宅予算を確認します。</p></section>
+
+<section class="card">
+<h2>1. ご家庭の状況</h2>
+<div class="info">「基本生活費」は、現在の家賃・住宅ローンなどの住居費を除いて入力してください。</div>
+<div class="grid">
+<div class="f"><label>本人年齢 <span>歳</span></label><input id="age" type="number" value="38"></div>
+<div class="f"><label>退職予定年齢 <span>歳</span></label><input id="retireAge" type="number" value="65"></div>
+<div class="f"><label>世帯年収 <span>万円</span></label><input id="income" type="number" value="600"></div>
+<div class="f"><label>手取り月収 <span>万円</span></label><input id="takehome" type="number" value="40"></div>
+<div class="f"><label>預貯金 <span>万円</span></label><input id="savings" type="number" value="500"></div>
+<div class="f"><label>現在の住居費 <span>万円/月</span></label><input id="currentHousing" type="number" value="8"></div>
+<div class="f"><label>子どもの人数 <span>人</span></label><input id="children" type="number" value="2"></div>
+<div class="f"><label>子どもの年齢 <span>例 12,8</span></label><input id="childAges" value="12,8"></div>
+<div class="f"><label>基本生活費（住居費除く） <span>万円/月</span></label><input id="living" type="number" value="22"></div>
+<div class="f"><label>車関連費 <span>万円/月</span></label><input id="car" type="number" value="4"></div>
+<div class="f"><label>他の借入返済 <span>万円/月</span></label><input id="otherDebt" type="number" value="0"></div>
+<div class="f"><label>教育費・積立 <span>万円/月</span></label><input id="educationSave" type="number" value="2"></div>
+<div class="f"><label>老後積立 <span>万円/月</span></label><input id="retirementSave" type="number" value="2"></div>
+</div>
+</section>
+
+<section class="card">
+<h2>2. 購入予定</h2>
+<div class="grid">
+<div class="f"><label>希望住宅価格 <span>万円</span></label><input id="price" type="number" value="4500"></div>
+<div class="f"><label>頭金 <span>万円</span></label><input id="down" type="number" value="300"></div>
+<div class="f"><label>購入諸費用 <span>万円</span></label><input id="closing" type="number" value="200"></div>
+<div class="f"><label>返済期間 <span>年</span></label><input id="years" type="number" value="35"></div>
+<div class="f"><label>想定金利 <span>%</span></label><input id="rate" type="number" step="0.01" value="1.2"></div>
+<div class="f"><label>購入後の住宅維持費 <span>万円/月</span></label><input id="ownership" type="number" step="0.1" value="3"></div>
+</div>
+<p class="small">住宅維持費には、固定資産税・火災地震保険・将来修繕費などの月割り目安を入力してください。マンションの場合は管理費・修繕積立金等も考慮してください。</p>
+<div id="err" class="err"></div>
+<button id="go" class="btn">無料で安全予算を診断する</button>
+</section>
+
+<section id="res" class="card res">
+<h2>診断結果</h2>
+<div id="judge" class="judge"></div>
+<h3>住宅予算の3つの目安</h3>
+<div class="tiers">
+<div class="tier safe"><span>現在の家計水準を維持する目安</span><strong id="safeBudget"></strong><small>生活費・教育費・老後積立・住宅維持費と、購入後に残す家計余力を考慮</small></div>
+<div class="tier safe"><span>退職までの完済を重視した目安</span><strong id="retireBudget"></strong><small>同じ安全返済額で、退職予定年齢までに完済する前提の目安</small></div>
+<div class="tier std"><span>返済比率25％の参考</span><strong id="standardBudget"></strong><small>手取り月収の25％を住宅ローン返済に使った場合の参考値</small></div>
+<div class="tier limit"><span>返済比率30％の注意上限</span><strong id="limitBudget"></strong><small>手取り月収の30％を返済に使うため、家計状況によっては負担が大きくなります</small></div>
+</div>
+<div class="sum"><strong>総合推奨レンジ</strong><br><span id="recommendedRange"></span><br><small>家計余力と退職までの返済期間の両方を見た簡易目安です。</small></div>
+<div class="criteria"><b>判定の考え方</b>「現在の家計水準を維持する目安」は、生活費・教育費・老後積立・住宅維持費を差し引いた後も家計余力を残し、かつ住宅ローン返済を手取り月収の25％以内とする考え方です。「退職までの完済を重視した目安」は同じ安全返済額を退職予定年齢までの期間で逆算します。25％・30％は本診断独自の家計管理上の目安で、金融機関の融資審査基準ではありません。</div>
+<div class="sum" id="summary"></div>
+<div class="metrics">
+<div class="metric"><span>希望住宅価格</span><strong id="mPrice"></strong></div>
+<div class="metric"><span>実際の毎月返済額</span><strong id="mPay"></strong></div>
+<div class="metric" id="ratioBox"><span>返済額／手取り</span><strong id="mRatio"></strong></div>
+<div class="metric" id="monthlyBox"><span>購入後の月間余力</span><strong id="mMonthly"></strong></div>
+<div class="metric" id="reserveBox"><span>購入後預貯金</span><strong id="mReserve"></strong></div>
+<div class="metric"><span>必要予備資金の目安</span><strong id="mReserveNeed"></strong></div>
+<div class="metric"><span>退職時残債</span><strong id="mRetire"></strong></div>
+<div class="metric"><span>金利＋1％時返済</span><strong id="mStress"></strong></div>
+<div class="metric"><span>金利＋2％時返済</span><strong id="mStress2"></strong></div>
+<div class="metric" id="stressMonthlyBox"><span>金利＋1％時の月間余力</span><strong id="mStressMonthly"></strong></div>
+<div class="metric" id="stress2MonthlyBox"><span>金利＋2％時の月間余力</span><strong id="mStress2Monthly"></strong></div>
+<div class="metric" id="currentMonthlyBox"><span>現在の月間余力</span><strong id="mCurrentMonthly"></strong></div>
+<div class="metric"><span>住宅購入による住居費の増加</span><strong id="mHousingDiff"></strong><small id="mHousingDiffNote"></small></div>
+</div>
+<h3>確認ポイント</h3>
+<div id="risks"></div>
+<div class="cta"><h3 id="ctaTitle">住宅購入前の相談はこちら</h3><p>診断結果をもとに、教育費・老後・金利上昇まで含めた資金計画を確認できます。</p><a id="ctaLink" href="https://www.maebashifp.com/">相談・来場予約へ</a></div>
+<button class="btn" style="margin-top:12px;background:#edf2f5;color:#263541" onclick="window.print()">印刷・PDF保存</button>
+</section>
+
+<p class="small" style="text-align:center">本診断は簡易試算です。融資承認や将来の家計安全性を保証するものではありません。教育費・老後資金・税金・修繕費・収入変動などは個別確認が必要です。</p>
+</div>
+
+<script>
+const $=i=>document.getElementById(i);
+const N=i=>parseFloat($(i).value);
+const M=n=>Math.max(0,Math.round(n)).toLocaleString("ja-JP")+"万円";
+
+function monthlyPayment(principal,rate,years){
+  principal*=10000; const n=years*12; const m=rate/1200;
+  if(!m)return principal/n/10000;
+  const f=(1+m)**n; return principal*m*f/(f-1)/10000;
+}
+function principalFromPayment(payment,rate,years){
+  payment*=10000; const n=years*12; const m=rate/1200;
+  if(!m)return payment*n/10000;
+  const f=(1+m)**n; return payment*(f-1)/(m*f)/10000;
+}
+function remainingBalance(principal,rate,years,elapsedYears){
+  principal*=10000; const n=years*12; const k=Math.min(n,Math.max(0,elapsedYears*12)); const m=rate/1200;
+  if(k>=n)return 0;
+  if(!m)return principal*(n-k)/n/10000;
+  const pay=principal*m*(1+m)**n/((1+m)**n-1);
+  return (principal*(1+m)**k-pay*((1+m)**k-1)/m)/10000;
+}
+function educationRiskText(ages){
+  if(!ages.length)return "";
+  if(ages.some(a=>a>=15&&a<=18)) return "高校・大学進学期が近いお子さまがいるため、今後3〜7年程度の教育費増加と住宅ローン返済の重なりを重点確認してください。";
+  if(ages.some(a=>a>=12&&a<15)) return "今後4〜10年程度で教育費負担が増えやすい時期に入るため、進学費用と住宅ローン返済の両立を確認してください。";
+  if(ages.some(a=>a<12)) return "教育費の本格的な増加まで時間がありますが、長期の住宅ローンと将来の進学費用を同時に準備する必要があります。";
+  return "教育費と住宅ローン返済の重なりを確認してください。";
+}
+
+function diagnose(){
+  const age=N("age"),retireAge=N("retireAge"),income=N("income"),takehome=N("takehome"),savings=N("savings"),currentHousing=N("currentHousing");
+  const children=N("children");
+  const ages=$("childAges").value.split(",").map(v=>Number(v.trim())).filter(Number.isFinite);
+  const living=N("living"),car=N("car"),debt=N("otherDebt"),edu=N("educationSave"),retirement=N("retirementSave");
+  const price=N("price"),down=N("down"),closing=N("closing"),years=N("years"),rate=N("rate"),ownership=N("ownership");
+
+  const errors=[];
+  if(!(age>=18&&age<80))errors.push("本人年齢を確認してください。");
+  if(!(retireAge>age))errors.push("退職予定年齢を確認してください。");
+  if(!(takehome>0&&income>0&&price>0&&years>=5))errors.push("入力内容を確認してください。");
+  if(children>0&&ages.length!==children)errors.push("子どもの年齢は人数分入力してください。");
+  if([savings,currentHousing,living,car,debt,edu,retirement,down,closing,rate,ownership].some(v=>!Number.isFinite(v)||v<0))errors.push("金額・金利には0以上の数値を入力してください。");
+
+  if(errors.length){$("err").innerHTML=errors.join("<br>");$("err").style.display="block";return;}
+  $("err").style.display="none";
+
+  const loan=Math.max(0,price-down);
+  const payment=monthlyPayment(loan,rate,years);
+  const stressPayment=monthlyPayment(loan,rate+1,years);
+  const stressPayment2=monthlyPayment(loan,rate+2,years);
+  const ratio=payment/takehome*100;
+
+  const baseEssential=living+car+debt+ownership;
+  const reserveNeed=Math.max(150,baseEssential*6);
+
+  const availableCash=Math.max(0,savings-reserveNeed-closing);
+  const usableDown=Math.min(down,availableCash);
+
+  const safetyBuffer=Math.max(2,takehome*0.05);
+  const householdCapacity=Math.max(0,takehome-living-car-debt-edu-retirement-ownership-safetyBuffer);
+  const safePayment=Math.min(householdCapacity,takehome*0.25);
+
+  const safeLoan=principalFromPayment(safePayment,rate,years);
+
+  const yearsToRetire=Math.max(1,retireAge-age);
+  const retireTerm=Math.min(years,yearsToRetire);
+  const retireLoan=principalFromPayment(safePayment,rate,retireTerm);
+
+  const standardLoan=principalFromPayment(takehome*0.25,rate,years);
+  const limitLoan=principalFromPayment(takehome*0.30,rate,years);
+
+  const safeBudget=safeLoan+usableDown;
+  const retireBudget=retireLoan+usableDown;
+  const standardBudget=standardLoan+usableDown;
+  const limitBudget=limitLoan+usableDown;
+
+  const rangeLow=Math.min(safeBudget,retireBudget);
+  const rangeHigh=Math.max(safeBudget,retireBudget);
+
+  const afterSavings=savings-down-closing;
+  const currentMonthlySurplus=takehome-living-car-debt-edu-retirement-currentHousing;
+  const monthlySurplus=takehome-living-car-debt-edu-retirement-ownership-payment;
+  const stressMonthlySurplus=takehome-living-car-debt-edu-retirement-ownership-stressPayment;
+  const stress2MonthlySurplus=takehome-living-car-debt-edu-retirement-ownership-stressPayment2;
+  const retireBalance=remainingBalance(loan,rate,years,Math.max(0,retireAge-age));
+  const housingDiff=payment+ownership-currentHousing;
+
+  let status="good",statusText="🟢 家計上は比較的安全な可能性";
+  if(price>limitBudget||monthlySurplus<0||ratio>30||afterSavings<0){status="bad";statusText="🔴 負担が大きい可能性";}
+  else if(price>safeBudget||ratio>25||afterSavings<reserveNeed||retireBalance>500){status="warn";statusText="🟡 購入前に詳細確認を推奨";}
+
+  $("judge").className="judge "+status;
+  $("judge").textContent=statusText;
+  $("safeBudget").textContent="約"+M(safeBudget);
+  $("retireBudget").textContent="約"+M(retireBudget);
+  $("recommendedRange").textContent=
+    "約"+Math.round(rangeLow).toLocaleString("ja-JP")+"〜"+Math.round(rangeHigh).toLocaleString("ja-JP")+"万円";
+  $("standardBudget").textContent="約"+M(standardBudget);
+  $("limitBudget").textContent="約"+M(limitBudget);
+  $("mPrice").textContent=M(price);
+  $("mPay").textContent=payment.toFixed(1)+"万円/月";
+  $("mRatio").textContent=ratio.toFixed(1)+"%";
+  $("mCurrentMonthly").textContent=(currentMonthlySurplus>=0?"+":"▲")+Math.abs(currentMonthlySurplus).toFixed(1)+"万円/月";
+  $("mMonthly").textContent=(monthlySurplus>=0?"+":"▲")+Math.abs(monthlySurplus).toFixed(1)+"万円/月";
+  $("mReserve").textContent=afterSavings>=0?M(afterSavings):"▲"+M(Math.abs(afterSavings));
+  $("mReserveNeed").textContent=M(reserveNeed);
+  $("mRetire").textContent=M(retireBalance);
+  $("mStress").textContent=stressPayment.toFixed(1)+"万円/月";
+  $("mStress2").textContent=stressPayment2.toFixed(1)+"万円/月";
+  $("mStressMonthly").textContent=(stressMonthlySurplus>=0?"+":"▲")+Math.abs(stressMonthlySurplus).toFixed(1)+"万円/月";
+  $("mStress2Monthly").textContent=(stress2MonthlySurplus>=0?"+":"▲")+Math.abs(stress2MonthlySurplus).toFixed(1)+"万円/月";
+
+  const newHousingCost=payment+ownership;
+  const hd=housingDiff>=0
+    ? "+"+housingDiff.toFixed(1)+"万円/月"
+    : "▲"+Math.abs(housingDiff).toFixed(1)+"万円/月";
+  $("mHousingDiff").textContent=hd;
+  $("mHousingDiffNote").textContent=
+    "現在の住居費 "+currentHousing.toFixed(1)+"万円/月 → 購入後の住居関連費 "+
+    newHousingCost.toFixed(1)+"万円/月（住宅ローン返済＋維持費）";
+
+  $("ratioBox").className="metric"+(ratio>30?" alert":ratio>25?" caution":"");
+  $("currentMonthlyBox").className="metric"+(currentMonthlySurplus<0?" alert":currentMonthlySurplus<2?" caution":"");
+  $("monthlyBox").className="metric"+(monthlySurplus<0?" alert":monthlySurplus<2?" caution":"");
+  $("reserveBox").className="metric"+(afterSavings<reserveNeed?" alert":"");
+  $("stressMonthlyBox").className="metric"+(stressMonthlySurplus<0?" alert":stressMonthlySurplus<2?" caution":"");
+  $("stress2MonthlyBox").className="metric"+(stress2MonthlySurplus<0?" alert":stress2MonthlySurplus<2?" caution":"");
+
+  if(price<=rangeLow)$("summary").textContent="希望住宅価格は、家計余力と退職までの返済期間の両面から見ても推奨レンジ内です。";
+  else if(price<=rangeHigh)$("summary").textContent="希望住宅価格は家計面では許容できる可能性がありますが、退職までの完済を重視すると慎重な確認が必要です。";
+  else if(price<=standardBudget)$("summary").textContent="希望住宅価格は、手取り25％の参考範囲ですが、家計収支や退職時残債から見ると余裕が小さくなる可能性があります。";
+  else if(price<=limitBudget)$("summary").textContent="希望住宅価格は、返済負担が高くなりやすい水準です。教育費・老後・金利上昇を含む詳細確認をおすすめします。";
+  else $("summary").textContent="希望住宅価格は、本診断の手取り30％注意上限も上回る試算です。予算の見直しをおすすめします。";
+
+  const risks=[];
+  if(afterSavings<reserveNeed)risks.push("購入後預貯金が生活防衛資金の目安（約"+Math.round(reserveNeed).toLocaleString("ja-JP")+"万円）を下回ります。");
+  if(down>availableCash)risks.push("予定している頭金を支払うと、購入諸費用や生活防衛資金を十分に残せない可能性があります。");
+  if(ratio>25)risks.push("住宅ローン返済額は手取り月収の"+ratio.toFixed(1)+"％です。");
+  if(monthlySurplus<0)risks.push("住宅購入後の毎月収支が約"+Math.abs(monthlySurplus).toFixed(1)+"万円の赤字となる試算です。");
+  else if(monthlySurplus<2)risks.push("住宅購入後の毎月の家計余力が小さい試算です。");
+  if(children>0)risks.push(educationRiskText(ages));
+  if(retireBalance>0)risks.push("退職予定時点に約"+Math.round(retireBalance).toLocaleString("ja-JP")+"万円の住宅ローン残債が残る試算です。");
+  if(years>yearsToRetire)risks.push("入力した返済期間は退職予定年齢までの期間より"+Math.round(years-yearsToRetire)+"年長いため、退職後も返済が続く前提です。");
+  const stressIncrease=Math.max(0,stressPayment-payment);
+  if(stressIncrease>=1)risks.push("金利が1％上昇すると、月返済額が約"+stressIncrease.toFixed(1)+"万円増える試算です。");
+  const stressIncrease2=Math.max(0,stressPayment2-payment);
+  if(stressIncrease2>=1)risks.push("金利が2％上昇すると、月返済額が約"+stressIncrease2.toFixed(1)+"万円増える試算です。");
+  if(housingDiff>0)risks.push("住宅購入後は、現在より住居関連支出が月約"+housingDiff.toFixed(1)+"万円増える試算です。");
+
+  $("risks").innerHTML=risks.map(v=>'<div class="risk">・'+v+"</div>").join("");
+  $("res").style.display="block";
+  $("res").scrollIntoView({behavior:"smooth"});
+}
+
+function tenant(){
+  const q=new URLSearchParams(location.search);
+  const company=q.get("company"),cta=q.get("cta"),color=q.get("color");
+  if(color&&/^#[0-9a-fA-F]{6}$/.test(color))document.documentElement.style.setProperty("--b",color);
+  if(company){$("brand").textContent=company+"｜住宅購入安全予算診断";$("ctaTitle").textContent=company+"に資金計画を相談する";}
+  if(cta)$("ctaLink").href=decodeURIComponent(cta);
+}
+$("go").onclick=diagnose;
+tenant();
+</script>
+</body>
+</html>
