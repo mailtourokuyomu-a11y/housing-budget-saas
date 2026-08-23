@@ -84,7 +84,7 @@ input{width:100%;padding:12px;border:1.5px solid #cfd8df;border-radius:11px;font
 <section id="res" class="card res">
 <h2>診断結果</h2>
 <div id="judge" class="judge"></div>
-<h3>住宅予算の目安</h3>
+<h3>住宅予算の3つの目安</h3>
 <div class="tiers">
 <div class="tier safe"><span>現在の家計水準を維持する目安</span><strong id="safeBudget"></strong><small>生活費・教育費・老後積立・住宅維持費と、購入後に残す家計余力を考慮</small></div>
 <div class="tier safe"><span>退職までの完済を重視した目安</span><strong id="retireBudget"></strong><small>同じ安全返済額で、退職予定年齢までに完済する前提の目安</small></div>
@@ -282,6 +282,46 @@ function tenant(){
 }
 $("go").onclick=diagnose;
 tenant();
+</script>
+
+<script>
+(()=>{
+  const PAYMENT_URL='https://buy.stripe.com/test_cNibJ07dh2DcerYgd46Zy00';
+  const ids=['age','retireAge','income','takehome','savings','currentHousing','children','childAges','living','car','otherDebt','educationSave','retirementSave','price','down','closing','years','rate','ownership'];
+
+  function saveInputs(){
+    const data={};
+    ids.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) data[id]=el.value;
+    });
+    localStorage.setItem('housingBudgetData',JSON.stringify(data));
+  }
+
+  function installOffer(){
+    const cta=document.querySelector('.cta');
+    if(!cta || cta.dataset.monetized) return;
+    cta.dataset.monetized='1';
+    cta.innerHTML=`
+      <div style="font-size:12px;font-weight:800;opacity:.8;margin-bottom:5px">次のステップ</div>
+      <h3 style="margin:0 0 8px">もっと詳しく診断する</h3>
+      <p style="margin:0 0 12px">希望価格との差、総返済額・利息、金利上昇、退職時残債、家計改善の必要額まで詳しく確認できます。</p>
+      <div style="font-size:26px;font-weight:900;margin:8px 0 12px">2,980円 <span style="font-size:12px;font-weight:600">1回払い</span></div>
+      <a id="paidDiagnosisLink" href="${PAYMENT_URL}">住宅購入 詳細診断へ</a>
+      <div style="font-size:11px;opacity:.7;margin-top:9px">現在はテスト決済環境です。本番販売前に本番Stripeへ切り替えます。</div>`;
+    const a=document.getElementById('paidDiagnosisLink');
+    if(a) a.addEventListener('click',saveInputs);
+  }
+
+  const go=document.getElementById('go');
+  if(go){
+    go.addEventListener('click',()=>{
+      saveInputs();
+      setTimeout(installOffer,50);
+    });
+  }
+  window.addEventListener('load',installOffer);
+})();
 </script>
 </body>
 </html>
