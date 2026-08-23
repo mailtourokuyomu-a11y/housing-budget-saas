@@ -286,7 +286,7 @@ tenant();
 
 <script>
 (()=>{
-  const PAYMENT_URL='https://buy.stripe.com/test_cNibJ07dh2DcerYgd46Zy00';
+  const PAYMENT_URL='https://buy.stripe.com/eVqfZjgq0frr2Xkh0e5gc00';
   const ids=['age','retireAge','income','takehome','savings','currentHousing','children','childAges','living','car','otherDebt','educationSave','retirementSave','price','down','closing','years','rate','ownership'];
 
   function saveInputs(){
@@ -308,7 +308,7 @@ tenant();
       <p style="margin:0 0 12px">希望価格との差、総返済額・利息、金利上昇、退職時残債、家計改善の必要額まで詳しく確認できます。</p>
       <div style="font-size:26px;font-weight:900;margin:8px 0 12px">2,980円 <span style="font-size:12px;font-weight:600">1回払い</span></div>
       <a id="paidDiagnosisLink" href="${PAYMENT_URL}">住宅購入 詳細診断へ</a>
-      <div style="font-size:11px;opacity:.7;margin-top:9px">現在はテスト決済環境です。本番販売前に本番Stripeへ切り替えます。</div>`;
+      <div style="font-size:11px;opacity:.7;margin-top:9px">Stripeの安全な決済画面へ移動します。決済完了後、詳細診断が表示されます。</div>`;
     const a=document.getElementById('paidDiagnosisLink');
     if(a) a.addEventListener('click',saveInputs);
   }
