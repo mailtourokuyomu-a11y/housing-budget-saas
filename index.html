@@ -286,7 +286,6 @@ tenant();
 
 <script>
 (()=>{
-  const PAYMENT_URL='https://buy.stripe.com/eVqfZjgq0frr2Xkh0e5gc00';
   const ids=['age','retireAge','income','takehome','savings','currentHousing','children','childAges','living','car','otherDebt','educationSave','retirementSave','price','down','closing','years','rate','ownership'];
 
   function saveInputs(){
@@ -298,6 +297,27 @@ tenant();
     localStorage.setItem('housingBudgetData',JSON.stringify(data));
   }
 
+  async function startCheckout(event){
+    event.preventDefault();
+    const a=document.getElementById('paidDiagnosisLink');
+    if(!a) return;
+    saveInputs();
+    const original=a.textContent;
+    a.textContent='決済画面を準備しています…';
+    a.style.pointerEvents='none';
+    try{
+      const response=await fetch('/api/create-checkout-session',{method:'POST'});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok || !data.url) throw new Error(data.error||'checkout_failed');
+      location.href=data.url;
+    }catch(e){
+      console.error(e);
+      alert('決済画面を開けませんでした。少し時間をおいて、もう一度お試しください。');
+      a.textContent=original;
+      a.style.pointerEvents='';
+    }
+  }
+
   function installOffer(){
     const cta=document.querySelector('.cta');
     if(!cta || cta.dataset.monetized) return;
@@ -306,11 +326,11 @@ tenant();
       <div style="font-size:12px;font-weight:800;opacity:.8;margin-bottom:5px">次のステップ</div>
       <h3 style="margin:0 0 8px">もっと詳しく診断する</h3>
       <p style="margin:0 0 12px">希望価格との差、総返済額・利息、金利上昇、退職時残債、家計改善の必要額まで詳しく確認できます。</p>
-      <div style="font-size:26px;font-weight:900;margin:8px 0 12px">2,980円 <span style="font-size:12px;font-weight:600">1回払い</span></div>
-      <a id="paidDiagnosisLink" href="${PAYMENT_URL}">住宅購入 詳細診断へ</a>
+      <div style="font-size:26px;font-weight:900;margin:8px 0 12px">3,300円 <span style="font-size:12px;font-weight:600">1回払い</span></div>
+      <a id="paidDiagnosisLink" href="/api/create-checkout-session">住宅購入 詳細診断へ</a>
       <div style="font-size:11px;opacity:.7;margin-top:9px">Stripeの安全な決済画面へ移動します。決済完了後、詳細診断が表示されます。</div>`;
     const a=document.getElementById('paidDiagnosisLink');
-    if(a) a.addEventListener('click',saveInputs);
+    if(a) a.addEventListener('click',startCheckout);
   }
 
   const go=document.getElementById('go');
