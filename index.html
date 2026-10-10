@@ -328,7 +328,7 @@ tenant();
       <p style="margin:0 0 12px">希望価格との差、総返済額・利息、金利上昇、退職時残債、家計改善の必要額まで詳しく確認できます。</p>
       <div style="font-size:26px;font-weight:900;margin:8px 0 12px">3,300円 <span style="font-size:12px;font-weight:600">1回払い</span></div>
       <a id="paidDiagnosisLink" href="/api/create-checkout-session">住宅購入 詳細診断へ</a>
-      <div style="font-size:11px;opacity:.7;margin-top:9px">Stripeの安全な決済画面へ移動します。決済完了後、この入力内容にもとづく詳細診断が表示されます。診断結果の表示後は、サービスの性質上、返金はできません。。</div>`;
+      <div style="font-size:11px;opacity:.7;margin-top:9px">Stripeの安全な決済画面へ移動します。決済完了後、この入力内容にもとづく詳細診断が表示されます。診断結果の表示後は、サービスの性質上、返金はできません。</div>`;
     const a=document.getElementById('paidDiagnosisLink');
     if(a) a.addEventListener('click',startCheckout);
   }
