@@ -10,7 +10,15 @@
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 gtag('js',new Date());
-gtag('config','G-TVW5N6JB3R',{page_location:location.origin+location.pathname});
+const allowedUtmKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+const currentQuery=new URLSearchParams(location.search);
+const safeAttributionQuery=new URLSearchParams();
+allowedUtmKeys.forEach(key=>{
+  const value=currentQuery.get(key);
+  if(value) safeAttributionQuery.set(key,value);
+});
+const measurementLocation=location.origin+location.pathname+(safeAttributionQuery.size?`?${safeAttributionQuery.toString()}`:'');
+gtag('config','G-TVW5N6JB3R',{page_location:measurementLocation});
 window.trackAnalyticsEvent=name=>gtag('event',name);
 </script>
 <style>
