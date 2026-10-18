@@ -56,7 +56,7 @@ input{width:100%;padding:12px;border:1.5px solid #cfd8df;border-radius:11px;font
 .small{font-size:12px;color:var(--m)}
 @media(max-width:560px){.grid,.metrics,.tiers{grid-template-columns:1fr}}
 </style>
-</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script></head>
 <body>
 <div class="w">
 <div id="brand" class="top">住宅購入安全予算診断｜スマイルFP事務所</div>
@@ -128,7 +128,7 @@ input{width:100%;padding:12px;border:1.5px solid #cfd8df;border-radius:11px;font
 <h3>確認ポイント</h3>
 <div id="risks"></div>
 <div class="cta"><h3 id="ctaTitle">住宅購入前の相談はこちら</h3><p>診断結果をもとに、教育費・老後・金利上昇まで含めた資金計画を確認できます。</p><a id="ctaLink" href="https://www.maebashifp.com/">相談・来場予約へ</a></div>
-<button class="btn" style="margin-top:12px;background:#edf2f5;color:#263541" onclick="window.print()">印刷・PDF保存</button>
+<button class="btn" id="printPdfBtn" type="button" style="margin-top:12px;background:#edf2f5;color:#263541;touch-action:manipulation" onclick="downloadResultPdf()">診断結果をPDF保存</button>
 </section>
 
 <p class="small" style="text-align:center">本診断は簡易試算です。融資承認や将来の家計安全性を保証するものではありません。教育費・老後資金・税金・修繕費・収入変動などは個別確認が必要です。</p>
@@ -289,6 +289,36 @@ function diagnose(){
   $("risks").innerHTML=risks.map(v=>'<div class="risk">・'+v+"</div>").join("");
   $("res").style.display="block";
   $("res").scrollIntoView({behavior:"smooth"});
+}
+
+async function downloadResultPdf(){
+  const result=$("res"), button=$("printPdfBtn");
+  if(!result||!button||getComputedStyle(result).display==="none")return;
+  const original=button.textContent;
+  button.disabled=true;
+  button.textContent="PDFを作成しています…";
+  button.style.opacity=".7";
+  try{
+    if(typeof window.html2pdf!=="function")throw new Error("pdf_library_unavailable");
+    button.style.display="none";
+    await window.html2pdf().set({
+      margin:[8,8,10,8],
+      filename:"住宅購入安全予算診断_結果.pdf",
+      image:{type:"jpeg",quality:.96},
+      html2canvas:{scale:2,useCORS:true},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+      pagebreak:{mode:["css","legacy"]}
+    }).from(result).save();
+  }catch(error){
+    console.error("PDF作成に失敗しました",error);
+    alert("PDFの作成を開始できませんでした。標準の印刷画面を開きます。そこで「PDFとして保存」を選んでください。");
+    if(typeof window.print==="function")window.print();
+  }finally{
+    button.style.display="";
+    button.disabled=false;
+    button.style.opacity="";
+    button.textContent=original;
+  }
 }
 
 function tenant(){
