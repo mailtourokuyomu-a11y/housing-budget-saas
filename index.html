@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>住宅購入安全予算診断</title>
 <meta name="description" content="借りられる額ではなく、購入後の生活・教育費・老後まで考えた住宅購入予算を簡易診断します。">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TVW5N6JB3R"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-TVW5N6JB3R',{page_location:location.origin+location.pathname});
+window.trackAnalyticsEvent=name=>gtag('event',name);
+</script>
 <style>
 :root{--b:#145c8e;--bg:#f4f7f9;--t:#17212b;--m:#66727e}
 *{box-sizing:border-box}
@@ -165,6 +173,7 @@ function diagnose(){
 
   if(errors.length){$("err").innerHTML=errors.join("<br>");$("err").style.display="block";return;}
   $("err").style.display="none";
+  window.trackAnalyticsEvent?.('free_diagnosis_complete');
 
   const loan=Math.max(0,price-down);
   const payment=monthlyPayment(loan,rate,years);
@@ -300,6 +309,7 @@ tenant();
 
   async function startCheckout(event){
     event.preventDefault();
+    window.trackAnalyticsEvent?.('detail_diagnosis_click');
     const a=document.getElementById('paidDiagnosisLink');
     if(!a) return;
     saveInputs();
