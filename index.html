@@ -168,7 +168,11 @@ function educationRiskText(ages){
 function diagnose(){
   const age=N("age"),retireAge=N("retireAge"),income=N("income"),takehome=N("takehome"),savings=N("savings"),currentHousing=N("currentHousing");
   const children=N("children");
-  const ages=$("childAges").value.split(",").map(v=>Number(v.trim())).filter(Number.isFinite);
+  const childAgeInput=$("childAges").value.trim();
+  const ages=childAgeInput ? childAgeInput.split(",").map(v=>{
+    const value=v.trim();
+    return value==="" ? NaN : Number(value);
+  }) : [];
   const living=N("living"),car=N("car"),debt=N("otherDebt"),edu=N("educationSave"),retirement=N("retirementSave");
   const price=N("price"),down=N("down"),closing=N("closing"),years=N("years"),rate=N("rate"),ownership=N("ownership");
 
@@ -176,7 +180,9 @@ function diagnose(){
   if(!(age>=18&&age<80))errors.push("本人年齢を確認してください。");
   if(!(retireAge>age))errors.push("退職予定年齢を確認してください。");
   if(!(takehome>0&&income>0&&price>0&&years>=5))errors.push("入力内容を確認してください。");
-  if(children>0&&ages.length!==children)errors.push("子どもの年齢は人数分入力してください。");
+  if(!(Number.isInteger(children)&&children>=0))errors.push("子どもの人数は0人以上の整数で入力してください。");
+  if(children>0&&(ages.length!==children||ages.some(v=>!Number.isFinite(v)||v<0)))errors.push("子どもの年齢は人数分、0歳以上で入力してください。");
+  if(down>price)errors.push("頭金は希望住宅価格以下で入力してください。");
   if([savings,currentHousing,living,car,debt,edu,retirement,down,closing,rate,ownership].some(v=>!Number.isFinite(v)||v<0))errors.push("金額・金利には0以上の数値を入力してください。");
 
   if(errors.length){$("err").innerHTML=errors.join("<br>");$("err").style.display="block";return;}
@@ -193,7 +199,7 @@ function diagnose(){
   const reserveNeed=Math.max(150,baseEssential*6);
 
   const availableCash=Math.max(0,savings-reserveNeed-closing);
-  const usableDown=Math.min(down,availableCash);
+  const usableDown=Math.min(down,availableCash,price);
 
   const safetyBuffer=Math.max(2,takehome*0.05);
   const householdCapacity=Math.max(0,takehome-living-car-debt-edu-retirement-ownership-safetyBuffer);
