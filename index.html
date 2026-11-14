@@ -388,6 +388,15 @@ tenant();
     if(a) a.addEventListener('click',startCheckout);
   }
 
+  const diagnosisInputs=document.querySelectorAll('input');
+  diagnosisInputs.forEach(input=>{
+    input.addEventListener('focus',()=>{
+      if(sessionStorage.getItem('ga4_free_diagnosis_started')) return;
+      sessionStorage.setItem('ga4_free_diagnosis_started','1');
+      window.trackAnalyticsEvent?.('free_diagnosis_start');
+    });
+  });
+
   const go=document.getElementById('go');
   if(go){
     go.addEventListener('click',()=>{
